@@ -13,7 +13,7 @@ class AgendaItem extends TRecord
     const IDPOLICY =  'max'; // {max, serial}
 
     private $agenda;
-    private $atendimentoitem;
+    private $atendimento_item;
 
     /**
      * Constructor method
@@ -40,17 +40,17 @@ class AgendaItem extends TRecord
         return $this->agenda;
     }
 
-    public function set_item(AtendimentoItem $object)
+    public function set_atendimento_item(AtendimentoItem $object)
     {
-        $this->atendimentoitem = $object;
+        $this->atendimento_item = $object;
         $this->atendimento_item_id = $object->id;
     }
 
-    public function get_item()
+    public function get_atendimento_item()
     {
-        if (empty($this->atendimentoitem))
-            $this->atendimentoitem = new AtendimentoItem($this->atendimento_item_id);
+        if (empty($this->atendimento_item))
+            $this->atendimento_item = new AtendimentoItem($this->atendimento_item_id);
 
-        return $this->atendimentoitem;
+        return $this->atendimento_item;
     }
 }
