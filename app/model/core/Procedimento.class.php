@@ -44,4 +44,57 @@ class Procedimento extends TRecord
 
         return $this->categoria;
     }
+
+    /**
+     * Reset aggregates
+     */
+    public function clearParts()
+    {
+        // delete the related objects
+        SystemUserGroup::where('procedimento_id', '=', $this->id)->delete();
+    }
+
+
+    /**
+     * Add a Profissional to the Procedimento
+     * @param $object Instance of SystemUser
+     */
+    public function addProfissional(SystemUser $profissional)
+    {
+        $object = new ProcedimentoProfissional;
+        $object->procedimento_id = $this->id;
+        $object->profissional_id = $profissional->id;
+        $object->store();
+    }
+
+    /**
+     * Return the procedure' professionals
+     * @return Collection of SystemUser
+     */
+    public function getProfissionais()
+    {
+        return parent::loadAggregate('SystemUser', 'ProcedimentoProfissional', 'procedimento_id', 'profissional_id', $this->id);
+    }
+
+    /**
+     * Get professional ids
+     */
+    public function getProfissionalIds($as_string = false)
+    {
+        $ids = array();
+        $objects = $this->getProfissionais();
+
+        if ($objects){
+            foreach ($objects as $object)
+            {
+                $ids[] = $object->id;
+            }
+        }
+        
+        if ($as_string){
+            return implode(',', $ids);
+        }
+        
+        return $ids;
+    }
 }
