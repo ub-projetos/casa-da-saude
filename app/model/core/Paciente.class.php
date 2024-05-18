@@ -22,6 +22,7 @@ class Paciente extends TRecord
         parent::addAttribute('nascimento');
         parent::addAttribute('celular');
         parent::addAttribute('email');
+        parent::addAttribute('obs');
         parent::addAttribute('created_at');
         parent::addAttribute('updated_at');
         parent::addAttribute('deleted_at');
