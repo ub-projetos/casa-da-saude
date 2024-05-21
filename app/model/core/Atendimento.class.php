@@ -21,21 +21,21 @@ class Atendimento extends TRecord
     {
         parent::__construct($id);
         parent::addAttribute('paciente_id'); 
-        parent::addAttribute('data');
+        parent::addAttribute('data_atendimento');
         parent::addAttribute('total');
         parent::addAttribute('created_at');
         parent::addAttribute('updated_at');
         parent::addAttribute('deleted_at');
     }
 
-    public function set_paciente(SystemUser $object){
+    public function set_paciente(Paciente $object){
         $this-> paciente = $object;
         $this-> system_users_id = $object-> id;
     }
 
     public function get_paciente(){
         if(empty($this->paciente))
-            $this->paciente = new SystemUser($this->paciente_id);
+            $this->paciente = new Paciente($this->paciente_id);
 
         return $this->paciente;
     }
