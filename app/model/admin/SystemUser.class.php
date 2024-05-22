@@ -15,6 +15,14 @@ class SystemUser extends TRecord
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
     
+
+    const SUPORTE           =  1; 
+    const ADMINISTRADOR     =  2; 
+    const COLABORADOR       =  3; 
+    const PROFISSIONAL      =  4; 
+    const PACIENTE          =  5; 
+    
+    
     // use SystemChangeLogTrait;
     
     private $frontpage;
@@ -582,5 +590,36 @@ class SystemUser extends TRecord
             }
         }
         return $collection;
+    }
+
+
+    public static function id()
+    {
+        return TSession::getValue('userid');
+    }
+
+    public static function current()
+    {
+        return new SystemUser(TSession::getValue('userid'));
+    }
+
+    public static function isSuporte(): bool
+    {
+        return in_array(self::SUPORTE, TSession::getValue('usergroupids'));
+    }
+
+    public static function isAdministrador(): bool
+    {
+        return in_array(self::ADMINISTRADOR, TSession::getValue('usergroupids'));
+    }
+
+    public static function isColaborador(): bool
+    {
+        return in_array(self::COLABORADOR, TSession::getValue('usergroupids'));
+    }
+
+    public static function isProfissional(): bool
+    {
+        return in_array(self::PROFISSIONAL, TSession::getValue('usergroupids'));
     }
 }
