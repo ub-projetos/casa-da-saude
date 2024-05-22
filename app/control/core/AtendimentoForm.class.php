@@ -21,7 +21,7 @@ class AtendimentoForm extends TPage
         $this->form->setFieldSizes('100%');
 
         $id = new THidden('id');
-        $paciente_id = new TDBCombo('paciente_id', 'casa_da_saude', 'Paciente', 'id', 'nome');
+        $paciente_id = new TDBCombo('paciente_id', 'app', 'Paciente', 'id', 'nome');
 
         $data_atendimento = new TDate('data_atendimento'); 
         $data_atendimento->setMask('dd/mm/yyyy');
@@ -53,7 +53,7 @@ class AtendimentoForm extends TPage
     public function onSave($param)
     {
         try {
-            TTransaction::open('casa_da_saude');
+            TTransaction::open('app');
 
             $this->form->validate();
             $data_atendimento = $this->form->getData();
@@ -82,7 +82,7 @@ class AtendimentoForm extends TPage
             if (isset($param['key'])) {
                 $key = $param['key'];
 
-                TTransaction::open('casa_da_saude');
+                TTransaction::open('app');
                 $object = new Atendimento($key);
                 $this->form->setData($object);
                 TTransaction::close();
