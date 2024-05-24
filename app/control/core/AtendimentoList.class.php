@@ -19,13 +19,16 @@ class AtendimentoList extends TPage
         $this->form->setFormTitle('LISTAGEM DE ATENDIMENTOS');
         $this->form->setFieldSizes('100%');
 
-        $paciente_id = new TDBCombo('paciente_id', 'casa_da_saude', 'Paciente', 'id', 'nome');
+        $paciente_id = new TDBCombo('paciente_id', 'app', 'Paciente', 'id', 'nome');
+        
         $atendimento_data = new TDate('data_atendimento'); 
         $atendimento_data->setMask('dd/mm/yyyy');
         $atendimento_data->setDatabaseMask('yyyy-mm-dd');
 
-        $this->form->addFields([new TLabel('Paciente'), $paciente_id], [new TLabel('Data'), $atendimento_data])
-            ->layout = ['col-sm-8', 'col-sm-4']; 
+        $this->form->addFields(
+            [new TLabel('Paciente'), $paciente_id], 
+            [new TLabel('Data'), $atendimento_data]
+        )->layout = ['col-sm-8', 'col-sm-4']; 
 
         $this->form->addAction('Pesquisar', new TAction([$this, 'onSearch']), 'fa:search');
         $this->form->addActionLink('Novo Atendimento', new TAction(['AtendimentoForm', 'onEdit']), 'fa:plus');
@@ -104,7 +107,7 @@ class AtendimentoList extends TPage
     public function onReload($param = NULL)
     {
         try {
-            TTransaction::open('casa_da_saude');
+            TTransaction::open('app');
 
             $repository = new TRepository('Atendimento');
             $limit = 10;

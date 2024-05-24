@@ -51,7 +51,7 @@ class Procedimento extends TRecord
     public function clearParts()
     {
         // delete the related objects
-        SystemUserGroup::where('procedimento_id', '=', $this->id)->delete();
+        ProcedimentoProfissional::where('procedimento_id', '=', $this->id)->delete();
     }
 
 
