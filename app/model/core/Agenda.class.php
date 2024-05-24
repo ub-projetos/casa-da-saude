@@ -23,7 +23,7 @@ class Agenda extends TRecord
         parent::__construct($id);
         parent::addAttribute('system_user_id'); 
         parent::addAttribute('profissional_id'); 
-        parent::addAttribute('data');
+        parent::addAttribute('date');
         parent::addAttribute('ativa');
         parent::addAttribute('created_at');
         parent::addAttribute('updated_at');
@@ -54,5 +54,18 @@ class Agenda extends TRecord
             $this->profissional = new SystemUser($this->profissional_id);
 
         return $this->profissional;
+    }
+
+    /**
+     * Reset aggregates
+     */
+    public function clearParts()
+    {
+        AgendaItem::where('agenda_id', '=', $this->id)->delete();
+    }
+
+    public function getAgendaItem()
+    {
+        return parent::loadComposite('AgendaItem', 'agenda_id', $this->id);
     }
 }
