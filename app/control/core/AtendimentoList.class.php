@@ -26,23 +26,34 @@ class AtendimentoList extends TPage
         $atendimento_data->setDatabaseMask('yyyy-mm-dd');
 
         $this->form->addFields(
-            [new TLabel('Paciente'), $paciente_id], 
-            [new TLabel('Data'), $atendimento_data]
-        )->layout = ['col-sm-8', 'col-sm-4']; 
+            [new TLabel('Data'), $atendimento_data],
+            [new TLabel('Paciente'), $paciente_id],
+            
+        )->layout = ['col-sm-4', 'col-sm-8']; 
 
-        $this->form->addAction('Pesquisar', new TAction([$this, 'onSearch']), 'fa:search');
-        $this->form->addActionLink('Novo Atendimento', new TAction(['AtendimentoForm', 'onEdit']), 'fa:plus');
-        $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:eraser');
+        $btn = $this->form->addActionLink(('Novo Atendimento'), new TAction(
+            ['AtendimentoForm', 'onEdit']), 'fa:plus'
+        );
+        $btn->class = 'btn btn-sm btn-primary';
+
+        $btn = $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:eraser');
+        $btn->class = 'btn btn-sm btn-default right';
+
+        $btn = $this->form->addAction('Pesquisar', new TAction([$this, 'onSearch']), 'fa:search');
+        $btn->class = 'btn btn-sm btn-default right';
+        
 
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width: 100%';
 
-        $column_paciente = new TDataGridColumn('paciente->nome', 'Paciente', 'left');
-        $column_data = new TDataGridColumn('data_atendimento', 'Data', 'center'); 
-        $column_total = new TDataGridColumn('total', 'Total', 'center');
+        $column_id = new TDataGridColumn('id', 'ID', 'center');
+        $column_data = new TDataGridColumn('data_atendimento', 'DATA', 'center');
+        $column_paciente = new TDataGridColumn('paciente->nome', 'PACIENTE', 'left');
+        $column_total = new TDataGridColumn('total', 'TOTAL', 'center');
 
+        $this->datagrid->addColumn($column_id); //->setVisibility(false);
         $this->datagrid->addColumn($column_paciente);
-        $this->datagrid->addColumn($column_data); 
+        $this->datagrid->addColumn($column_data);
         $this->datagrid->addColumn($column_total);
 
         $action_edit = new TDataGridAction(['AtendimentoForm', 'onEdit']);
