@@ -23,7 +23,7 @@ class Agenda extends TRecord
         parent::__construct($id);
         parent::addAttribute('system_user_id'); 
         parent::addAttribute('profissional_id'); 
-        parent::addAttribute('date');
+        parent::addAttribute('data_agenda');
         parent::addAttribute('ativa');
         parent::addAttribute('created_at');
         parent::addAttribute('updated_at');
@@ -68,4 +68,17 @@ class Agenda extends TRecord
     {
         return parent::loadComposite('AgendaItem', 'agenda_id', $this->id);
     }
+
+    /**
+     * Add a AgendaItem to the user
+     */
+    public function addAgendaItem($horario_id)
+    {
+        $agenda_item = new AgendaItem();
+        $agenda_item->horario_id = $horario_id;
+        $agenda_item->agenda_id = $this->id;
+        $agenda_item->store();
+    }
+
+    
 }
