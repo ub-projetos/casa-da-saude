@@ -27,7 +27,7 @@ class AgendaList extends TPage
 
         // Criar os campos do formulário
         //$id = new TEntry('id');
-        $data_agenda = new TEntry('data_agenda');
+        $data_agenda = new TDate('data_agenda');
         $data_agenda->setMask("dd/mm/yyyy");
         $data_agenda->placeholder = "dd/mm/aaaa";
 
