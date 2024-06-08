@@ -50,5 +50,87 @@ class AppHelper
         return $value;
     }
 
+    public static function toDateBR($value)
+    {
+        if($value){
+            $date = new DateTime($value);
+            return $date->format('d/m/Y');
+        }
+        return $value;
+    }
+
+    public static function toDateTimeBR($value)
+    {
+        $date = new DateTime($value);
+        return $date->format('d/m/Y H:i:s');
+    }
+
+    public static function toDouble($value)
+    {
+        setlocale(LC_ALL, 'en_US.UTF-8');
+        if (is_array($value)) {
+            $values = array();
+            foreach ($value as $val) {
+                $values[] = self::toDouble($val);
+            }
+            return $values;
+        } else {
+            if (is_int(strpos((string)$value, ','))) {
+                $value = str_replace('R$', '', (string)$value);
+                $value = str_replace('%', '', (string)$value);
+                $value = str_replace('.', '', (string)$value);
+                $value = str_replace(',', '.', (string)$value);
+            }
+            return (double) $value;
+        }
+    }
+
+    public static function toNumeric($value, $casas = 2)
+    {
+        if($value){
+            return number_format((string) $value, $casas, ',', '.');
+        }
+    }
+
+    public static function toMonetary($value)
+    {
+        if($value){
+            return 'R$ ' . number_format((string)$value, 2, ',', '.');
+        }
+    }
+
+    public static function toOnlyNumber($value)
+    {
+        if($value){
+            return preg_replace("/[^0-9]/", "", $value);
+        }
+    }
+
+    public static function toDateUS($value)
+    {
+        try{
+            if ($value) {
+                $date = DateTime::createFromFormat('d/m/Y', $value);
+                return $date->format('Y-m-d');
+            }
+            return null;
+        }catch(Exception $e){
+            return null;
+        }
+    }
+
+    public static function toHour($value)
+    {
+        if ($value) {
+            $minutos = (int)$value;
+
+            $horas = floor($minutos / 60);
+            $minutosRestantes = $minutos % 60;
+            
+            return sprintf("%dh%02d", $horas, $minutosRestantes);
+        }
+        return null;
+    }
+
 
 }

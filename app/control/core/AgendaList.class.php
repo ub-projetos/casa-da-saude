@@ -27,13 +27,13 @@ class AgendaList extends TPage
 
         // Criar os campos do formulário
         //$id = new TEntry('id');
-        $profissional_id = new TEntry('profissional_id');
-        $profissional_id->forceUpperCase();
-        $profissional_id->placeholder = "Digite o nome do profissional";
+        $data_agenda = new TDate('data_agenda');
+        $data_agenda->setMask("dd/mm/yyyy");
+        $data_agenda->placeholder = "dd/mm/aaaa";
 
-        $date = new TEntry('date');
-        $date->setMask("dd/mm/yyyy");
-        $date->placeholder = "dd/mm/aaaa";
+        $profissional_id = new TDBUniqueSearch('profissional_id', 'app', 'ViewProfissional', 'id', 'name', 'name');
+        $profissional_id->setMask('{name}');
+        $profissional_id->setMinLength(1);
 
         $ativa = new TCombo('ativa');
         $ativa->setDefaultOption("Selecione");
@@ -41,20 +41,18 @@ class AgendaList extends TPage
             "Y" => 'sim',
             "N" => 'não'
         ]);
-        
 
         // Adicionar os campos ao formulário
         
         $row = $this->form->addFields(
-            [ new TLabel('Pesquisa'), $profissional_id ],
-            [ new TLabel('Data'), $date ],
+            [ new TLabel('Data'), $data_agenda ],
+            [ new TLabel('Profissional'), $profissional_id ],
             [ new TLabel('Ativo'), $ativa ],
         );
-        $row->layout = ['col-sm-4', 'col-sm-4', 'col-sm-4'];
+        $row->layout = ['col-sm-3', 'col-sm-6', 'col-sm-3'];
 
-        
         // keep the form filled during navigation with session data
-        $this->form->setData( TSession::getValue(__CLASS__ . '_filter_data') );
+        $this->form->setData(TSession::getValue(__CLASS__ . '_filter_data') );
         
         $btn = $this->form->addActionLink(('Nova Agenda'), new TAction(
             ['AgendaForm', 'onEdit']), 'fa:plus'
@@ -77,7 +75,7 @@ class AgendaList extends TPage
         // creates the datagrid columns
         $column_id = new TDataGridColumn('id', 'ID', 'center');
         $column_system_user_id = new TDataGridColumn('system_user_id', 'ID_USER', 'center');
-        $column_date = new TDataGridColumn('date', 'DATA', 'center');
+        $column_data_agenda = new TDataGridColumn('data_agenda', 'DATA', 'center');
         $column_profissional_id = new TDataGridColumn('profissional_id', 'NOME&nbsp;PROFISSIONAL', 'center');
         $column_ativa = new TDataGridColumn('ativa', 'ATIVO', 'center');
 
@@ -85,7 +83,7 @@ class AgendaList extends TPage
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_id)->setVisibility(false);
         $this->datagrid->addColumn($column_system_user_id)->setVisibility(false);
-        $this->datagrid->addColumn($column_date);
+        $this->datagrid->addColumn($column_data_agenda);
         $this->datagrid->addColumn($column_profissional_id);
         $this->datagrid->addColumn($column_ativa);
 
@@ -104,7 +102,7 @@ class AgendaList extends TPage
         });
 
 
-        $column_date->setTransformer( function($value, $object, $row) {
+        $column_data_agenda->setTransformer( function($value, $object, $row) {
             if(!empty($value)){
                 $date = new DateTime($value);
                 return $date->format('d/m/Y');
@@ -155,7 +153,7 @@ class AgendaList extends TPage
     {
         TSession::setValue(__CLASS__.'_filter_data', NULL);
         TSession::setValue(__CLASS__.'_filter_profissional_id',   NULL);
-        TSession::setValue(__CLASS__.'_filter_date',   NULL);
+        TSession::setValue(__CLASS__.'_filter_data_agenda',   NULL);
         TSession::setValue(__CLASS__.'_filter_ativa',   NULL);
 
         //Limpar formulário depois...
@@ -173,7 +171,7 @@ class AgendaList extends TPage
     
         TSession::setValue(__CLASS__.'_filter_data', NULL);
         TSession::setValue(__CLASS__.'_filter_profissional_id',   NULL);
-        TSession::setValue(__CLASS__.'_filter_date',   NULL);
+        TSession::setValue(__CLASS__.'_filter_data_agenda',   NULL);
         TSession::setValue(__CLASS__.'_filter_ativa',   NULL);
 
 
@@ -182,9 +180,9 @@ class AgendaList extends TPage
             TSession::setValue(__CLASS__.'_filter_profissional_id',   $filter);
         }
 
-        if (isset($data->date) and ($data->date)) {
-            $filter = new TFilter('date', '=', $data->date); 
-            TSession::setValue(__CLASS__.'_filter_date', $filter);
+        if (isset($data->data_agenda) and ($data->data_agenda)){
+            $filter = new TFilter('data_agenda', '=', DateTime::createFromFormat('d/m/Y', $data->data_agenda)->format('Y-m-d')); 
+            TSession::setValue(__CLASS__.'_filter_data_agenda', $filter);
         }
 
         if (isset($data->ativa) AND ($data->ativa)) {
@@ -218,7 +216,7 @@ class AgendaList extends TPage
             
             if (empty($param['order']))
             {
-                $param['order'] = 'date';
+                $param['order'] = 'data_agenda';
                 $param['direction'] = 'asc';
             }
             $criteria->setProperties($param); 
@@ -228,10 +226,10 @@ class AgendaList extends TPage
                 $criteria->add(TSession::getValue(__CLASS__.'_filter_profissional_id')); 
             }
 
-            if (TSession::getValue(__CLASS__.'_filter_date')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_date')); 
+            if (TSession::getValue(__CLASS__.'_filter_data_agenda')) {
+                $criteria->add(TSession::getValue(__CLASS__.'_filter_data_agenda')); 
             } else {
-                $criteria->add($filter = new TFilter('date', '>=', date('Y-m-d'))); 
+                $criteria->add($filter = new TFilter('data_agenda', '>=', date('Y-m-d'))); 
             }
 
             if (TSession::getValue(__CLASS__.'_filter_ativa')) {

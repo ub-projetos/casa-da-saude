@@ -21,7 +21,11 @@ class AtendimentoForm extends TPage
         $this->form->setFieldSizes('100%');
 
         $id = new THidden('id');
-        $paciente_id = new TDBCombo('paciente_id', 'app', 'Paciente', 'id', 'nome');
+
+        $paciente_id = new TDBUniqueSearch('paciente_id', 'app', 'Paciente', 'id', 'nome', 'nome');
+        $paciente_id->setMask('{nome} - {cpf}');
+        $paciente_id->addValidation('Paciente', new TRequiredValidator());
+        $paciente_id->setMinLength(1);
 
         $data_atendimento = new TDate('data_atendimento'); 
         $data_atendimento->setMask('dd/mm/yyyy');

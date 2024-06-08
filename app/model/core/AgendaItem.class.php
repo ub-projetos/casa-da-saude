@@ -14,6 +14,7 @@ class AgendaItem extends TRecord
 
     private $agenda;
     private $atendimento_item;
+    private $horario;
 
     /**
      * Constructor method
@@ -23,7 +24,7 @@ class AgendaItem extends TRecord
         parent::__construct($id);
         parent::addAttribute('agenda_id'); 
         parent::addAttribute('atendimento_item_id'); 
-        parent::addAttribute('hora');
+        parent::addAttribute('horario_id');
     }
 
     public function set_agenda(Agenda $object)
@@ -54,30 +55,19 @@ class AgendaItem extends TRecord
         return $this->atendimento_item;
     }
 
-    public static function list_horarios()
+    public function set_horario(Horario $object)
     {
-        return [
-            '1' => "08:00",
-            '2' => "08:30",
-            '3' => "09:00",
-            '4' => "09:30",
-            '5' => "10:00",
-            '6' => "10:30",
-            '7' => "11:00",
-            '8' => "11:30",
-            '9' => "12:00",
-            '10' => "12:30",
-            '11' => "13:00",
-            '12' => "13:30",
-            '13' => "14:00",
-            '14' => "14:30",
-            '15' => "15:00",
-            '16' => "15:30",
-            '17' => "16:00",
-            '18' => "16:30",
-            '19' => "17:00",
-            '20' => "17:30"
-        ];
+        $this->horario = $object;
+        $this->horario_id = $object->id;
     }
+
+    public function get_horario()
+    {
+        if (empty($this->horario))
+            $this->horario = new Horario($this->horario_id);
+
+        return $this->horario;
+    }
+
 
 }

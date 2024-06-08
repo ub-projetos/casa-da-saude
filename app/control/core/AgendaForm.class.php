@@ -59,8 +59,7 @@ class AgendaForm extends TPage
         #    $label->setSize(110);
         #}
 
-        $horario = new TCheckGroup('horario');
-        $horario->addItems(AgendaItem::list_horarios());
+        $horario = new TDBCheckGroup('horario','app','Horario','id','hora');
         $horario->setLayout('horizontal');
         $horario->setBreakItems(10);
         $horario->setUseButton();
@@ -142,8 +141,9 @@ class AgendaForm extends TPage
             } else {
                 $repository = new TRepository('Agenda');
                 $criteria = new TCriteria;
-                $criteria->add(new TFilter('date', 'between', $data->data_inicial, $data->data_final));
+                $criteria->add(new TFilter('data_agenda', 'between', $data->data_inicial, $data->data_final));
                 $criteria->add(new TFilter('profissional_id', '=', $data->profissional_id));
+                $criteria->add(new TFilter('deleted_at',"is",null));  
                 $objects = $repository->load($criteria, FALSE);
 
                 if ($objects) {throw new Exception('<h5>Já existe agenda cadastrada nesse periodo para esse profissional</h5>');}
@@ -165,20 +165,16 @@ class AgendaForm extends TPage
                 $object->id = $data->id;
                 $object->system_user_id = SystemUser::id();
                 $object->profissional_id = $data->profissional_id;
-                $object->date = date("Y-m-d", strtotime("+{$i} days",strtotime($data->data_inicial)));
+                $object->data_agenda = date("Y-m-d", strtotime("+{$i} days",strtotime($data->data_inicial)));
                 $object->ativa = $data->ativa;
                 
                 $object->store();
                 $object->clearParts();
-                #var_dump($data->horario);
 
-                foreach ($data->horario as  $key=>$tempo) {
-                    $agenda_item = new AgendaItem();
-
-                    $agenda_item->agenda_id = $object->id;
-                    $agenda_item->hora = $tempo;
-                    $agenda_item->store();
+                foreach( $data->horario as $horario_id ){
+                    $object->addAgendaItem($horario_id);
                 }
+                
             }
 
             TTransaction::close(); 
@@ -216,16 +212,16 @@ class AgendaForm extends TPage
 
                 TTransaction::open('app'); 
                 $object = new Agenda($key);
-                $object->data_inicial = $object->date;
-                $object->data_final = $object->date;
+                $object->data_inicial = $object->data_agenda;
+                $object->data_final = $object->data_agenda;
 
-                $teste = [];
+                $array = [];
                 $itens = $object->getAgendaItem();
 
-                foreach ($itens as $key => $value) {
-                    $teste[] = $value->hora;
+                foreach ($itens as $item) {
+                    $array[] = $item->horario_id;
                 }
-                $object->horario = $teste;
+                $object->horario = $array;
 
                 $this->form->setData($object);
                 TDate::disableField('form_Agenda', 'data_final');
