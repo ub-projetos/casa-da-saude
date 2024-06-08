@@ -143,6 +143,7 @@ class AgendaForm extends TPage
                 $criteria = new TCriteria;
                 $criteria->add(new TFilter('data_agenda', 'between', $data->data_inicial, $data->data_final));
                 $criteria->add(new TFilter('profissional_id', '=', $data->profissional_id));
+                $criteria->add(new TFilter('deleted_at',"is",null));  
                 $objects = $repository->load($criteria, FALSE);
 
                 if ($objects) {throw new Exception('<h5>Já existe agenda cadastrada nesse periodo para esse profissional</h5>');}

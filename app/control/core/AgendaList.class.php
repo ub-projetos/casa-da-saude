@@ -41,7 +41,6 @@ class AgendaList extends TPage
             "Y" => 'sim',
             "N" => 'não'
         ]);
-        
 
         // Adicionar os campos ao formulário
         
@@ -52,9 +51,8 @@ class AgendaList extends TPage
         );
         $row->layout = ['col-sm-3', 'col-sm-6', 'col-sm-3'];
 
-        
         // keep the form filled during navigation with session data
-        $this->form->setData( TSession::getValue(__CLASS__ . '_filter_data') );
+        $this->form->setData(TSession::getValue(__CLASS__ . '_filter_data') );
         
         $btn = $this->form->addActionLink(('Nova Agenda'), new TAction(
             ['AgendaForm', 'onEdit']), 'fa:plus'
@@ -182,8 +180,8 @@ class AgendaList extends TPage
             TSession::setValue(__CLASS__.'_filter_profissional_id',   $filter);
         }
 
-        if (isset($data->data_agenda) and ($data->data_agenda)) {
-            $filter = new TFilter('data_agenda', '=', $data->data_agenda); 
+        if (isset($data->data_agenda) and ($data->data_agenda)){
+            $filter = new TFilter('data_agenda', '=', DateTime::createFromFormat('d/m/Y', $data->data_agenda)->format('Y-m-d')); 
             TSession::setValue(__CLASS__.'_filter_data_agenda', $filter);
         }
 
