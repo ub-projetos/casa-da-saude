@@ -95,7 +95,7 @@ class AppHelper
     public static function toMonetary($value)
     {
         if($value){
-            return 'R$&nbsp;' . number_format((string)$value, 2, ',', '.');
+            return 'R$ ' . number_format((string)$value, 2, ',', '.');
         }
     }
 
@@ -104,6 +104,32 @@ class AppHelper
         if($value){
             return preg_replace("/[^0-9]/", "", $value);
         }
+    }
+
+    public static function toDateUS($value)
+    {
+        try{
+            if ($value) {
+                $date = DateTime::createFromFormat('d/m/Y', $value);
+                return $date->format('Y-m-d');
+            }
+            return null;
+        }catch(Exception $e){
+            return null;
+        }
+    }
+
+    public static function toHour($value)
+    {
+        if ($value) {
+            $minutos = (int)$value;
+
+            $horas = floor($minutos / 60);
+            $minutosRestantes = $minutos % 60;
+            
+            return sprintf("%dh%02d", $horas, $minutosRestantes);
+        }
+        return null;
     }
 
 
